@@ -1,0 +1,20 @@
+const express = require("express");
+const app = express();
+const cookieParser = require('cookie-parser');
+const connect = require("./config/connectrion");
+const dotenv = require("dotenv");
+const { middleware } = require('./config/middleware');
+const authRoute = require("./routs/auth");
+const movieRoutes = require("./routs/movie");
+const tvRoutes = require("./routs/tv");
+const searchRoutes = require("./routs/search");
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+dotenv.config();
+app.use("/api/auth", authRoute);
+app.use("/api/v1/movie", middleware, movieRoutes);
+app.use("/api/v1/tv", middleware, tvRoutes);
+app.use("/api/v1/search", middleware, searchRoutes);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
+});
