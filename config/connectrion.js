@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1/netflix');
-const db = mongoose.connection;
-db.once('open',function(err){
-    if(err){
-        console.log("Database Not Connected");
-        process.exit(1);
-    }
-    console.log("Database Is Connected");
-});
-module.exports=db;
+require('dotenv').config(); 
+if (!process.env.MONGO_URL || process.env.MONGO_URL === '') {
+    console.error('MONGO_URL environment variable is not set.');
+    process.exit(1); // Exit the process if MONGO_URL is not set
+} else {
+    mongoose.connect(process.env.MONGO_URL).then(() => {
+        console.log('Database connected.');
+    }).catch(err => {
+        console.error('Error connecting to database:', err);
+    });
+
+    const db = mongoose.connection;
+
+    module.exports = db;
+}
